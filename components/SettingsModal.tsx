@@ -27,7 +27,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
   const handleSave = () => {
     if (!token.trim()) {
-      setError('API Token is required');
+      setError('API Token 是必需的');
       return;
     }
     onSave({ ...settings, siliconFlowToken: token.trim() });
@@ -40,7 +40,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">
         <div className="flex items-center justify-between p-4 border-b border-gray-100">
-          <h2 className="text-lg font-semibold text-gray-800">Settings</h2>
+          <h2 className="text-lg font-semibold text-gray-800">设置</h2>
           <button onClick={onClose} className="p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-colors">
             <X size={20} />
           </button>
@@ -52,7 +52,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               SiliconFlow API Token
             </label>
             <p className="text-xs text-gray-500 mb-2">
-              Required for voice-to-text transcription.
+              语音转文字功能需要此配置。
             </p>
             <input
               type="password"
@@ -71,8 +71,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           
           <div className="pt-2">
              <div className="bg-blue-50 text-blue-800 text-xs p-3 rounded-lg">
-                <p className="font-semibold mb-1">About Security</p>
-                <p>Your API token is stored locally in your browser and is never sent to our servers. It interacts directly with SiliconFlow API.</p>
+                <p className="font-semibold mb-1">关于安全</p>
+                <p>您的 API token 存储在本地浏览器中，永远不会发送到我们的服务器。它直接与 SiliconFlow API 交互。</p>
              </div>
           </div>
         </div>
@@ -82,14 +82,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             onClick={onClose}
             className="px-4 py-2 text-gray-600 font-medium hover:bg-gray-200 rounded-lg transition-colors"
           >
-            Cancel
+            取消
           </button>
           <button
             onClick={handleSave}
             className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
           >
             <Save size={18} />
-            Save Changes
+            保存更改
           </button>
         </div>
       </div>

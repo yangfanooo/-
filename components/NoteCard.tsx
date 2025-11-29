@@ -21,7 +21,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({ note, onClick }) => {
         {note.aiResponse && (
           <div className="flex items-center gap-1 text-xs font-semibold text-purple-600 bg-purple-50 px-2 py-0.5 rounded-full">
             <Sparkles size={10} />
-            <span>AI Processed</span>
+            <span>已处理</span>
           </div>
         )}
       </div>
@@ -41,7 +41,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({ note, onClick }) => {
 
       <div className="flex justify-end mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
         <span className="text-blue-500 text-xs font-semibold flex items-center gap-1">
-          View Details <ChevronRight size={12} />
+          查看详情 <ChevronRight size={12} />
         </span>
       </div>
     </div>

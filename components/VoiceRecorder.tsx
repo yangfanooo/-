@@ -56,7 +56,7 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
 
   const processAudio = async (blob: Blob) => {
     if (!apiToken) {
-      setError("Please configure SiliconFlow API Token in settings first.");
+      setError("请先在设置中配置 SiliconFlow API Token。");
       return;
     }
 
@@ -67,7 +67,7 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
       const text = await transcribeAudio(blob, apiToken);
       onTranscriptionComplete(text);
     } catch (err: any) {
-      setError(err.message || "Transcription failed.");
+      setError(err.message || "转录失败。");
       setIsProcessing(false);
     }
   };
@@ -78,13 +78,13 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
         <div className="w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center mb-4">
           <Mic size={32} />
         </div>
-        <h3 className="text-xl font-bold text-gray-800 mb-2">Microphone Access Denied</h3>
-        <p className="text-gray-600 mb-6">Please allow microphone access to record notes.</p>
+        <h3 className="text-xl font-bold text-gray-800 mb-2">麦克风访问被拒绝</h3>
+        <p className="text-gray-600 mb-6">请允许麦克风访问以录制笔记。</p>
         <button
           onClick={onCancel}
           className="px-6 py-2 bg-gray-200 text-gray-800 rounded-full font-medium"
         >
-          Close
+          关闭
         </button>
       </div>
     );
@@ -118,14 +118,14 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
       {/* Timer / Status Text */}
       <div className="mb-8 text-center">
         {isProcessing ? (
-          <h3 className="text-xl font-semibold text-gray-800 animate-pulse">Transcribing...</h3>
+          <h3 className="text-xl font-semibold text-gray-800 animate-pulse">正在转录...</h3>
         ) : (
           <h3 className="text-4xl font-mono font-bold text-gray-800 tracking-wider">
             {formatTime(recordingTime)}
           </h3>
         )}
         <p className="text-sm text-gray-500 mt-2">
-          {isRecording ? "Listening..." : isProcessing ? "This may take a moment" : "Ready to record"}
+          {isRecording ? "正在监听..." : isProcessing ? "这可能需要一些时间" : "准备录制"}
         </p>
       </div>
 
@@ -136,7 +136,7 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
              <button
               onClick={onCancel}
               className="p-4 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
-              title="Cancel"
+              title="取消"
             >
               <XIcon />
             </button>
@@ -173,7 +173,7 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
              }}
              className="block mx-auto mt-2 text-red-700 font-bold hover:underline"
           >
-            Retry Transcription
+            重试转录
           </button>
         </div>
       )}

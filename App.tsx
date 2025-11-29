@@ -58,7 +58,7 @@ export default function App() {
   };
 
   const handleDeleteNote = (id: string) => {
-    if (confirm('Are you sure you want to delete this note?')) {
+    if (confirm('确定要删除这条笔记吗？')) {
       setNotes(prev => prev.filter(n => n.id !== id));
       setActiveNote(null);
       setView('list');
@@ -68,9 +68,15 @@ export default function App() {
   const handleRunAI = async (promptType: AIPromptType) => {
     if (!activeNote) return;
     
+    if (!settings.siliconFlowToken) {
+      alert("请先在设置中配置 SiliconFlow API Token。");
+      setIsSettingsOpen(true);
+      return;
+    }
+    
     setIsGeneratingAI(true);
     try {
-      const response = await generateNoteContent(activeNote.content, promptType);
+      const response = await generateNoteContent(activeNote.content, promptType, settings.siliconFlowToken);
       const updatedNote = { 
         ...activeNote, 
         aiResponse: response,
@@ -79,8 +85,11 @@ export default function App() {
       
       setNotes(prev => prev.map(n => n.id === updatedNote.id ? updatedNote : n));
       setActiveNote(updatedNote);
-    } catch (error) {
-      alert("Failed to generate AI content. Ensure your API Key is valid.");
+    } catch (error: any) {
+      // 显示更详细的错误信息
+      const errorMessage = error?.message || "生成 AI 内容失败，请检查 API Token 配置和网络连接。";
+      alert(errorMessage);
+      console.error("AI Action Error:", error);
     } finally {
       setIsGeneratingAI(false);
     }
@@ -99,10 +108,10 @@ export default function App() {
     return (
       <div className="fixed inset-0 bg-white z-50 flex flex-col">
          <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-white/80 backdrop-blur-md sticky top-0">
-             <h1 className="text-lg font-bold text-gray-800">New Recording</h1>
+             <h1 className="text-lg font-bold text-gray-800">新建录音</h1>
              <button onClick={() => setView('list')} className="p-2 bg-gray-100 rounded-full">
                  <Settings size={0} className="w-0 h-0" /> {/* Hidden hack for spacing if needed, or just X */}
-                 <span className="text-sm font-semibold text-gray-600">Cancel</span>
+                 <span className="text-sm font-semibold text-gray-600">取消</span>
              </button>
          </div>
         <VoiceRecorder
@@ -140,13 +149,13 @@ export default function App() {
         <div className="flex-1 overflow-y-auto p-4 max-w-2xl mx-auto w-full space-y-6">
           {/* Original Content */}
           <section className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-4">Original Transcript</h3>
+            <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-4">原始转录</h3>
             <p className="text-lg leading-relaxed text-gray-800 whitespace-pre-wrap">{activeNote.content}</p>
           </section>
 
           {/* AI Actions */}
           <section>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-3 ml-1">AI Actions</h3>
+            <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-3 ml-1">AI 操作</h3>
             <div className="flex flex-wrap gap-2">
               {Object.values(AIPromptType).map((type) => (
                 <button
@@ -172,7 +181,7 @@ export default function App() {
             <div className="bg-gradient-to-br from-purple-50 to-white rounded-2xl p-6 border border-purple-100 animate-pulse">
                <div className="flex items-center gap-2 text-purple-600 mb-2">
                  <Sparkles size={18} className="animate-spin" />
-                 <span className="font-semibold">Gemini is thinking...</span>
+                 <span className="font-semibold">AI 正在思考...</span>
                </div>
                <div className="h-4 bg-purple-100 rounded w-3/4 mb-2"></div>
                <div className="h-4 bg-purple-100 rounded w-1/2"></div>
@@ -182,12 +191,12 @@ export default function App() {
               <div className="flex justify-between items-center mb-4">
                  <h3 className="text-sm font-bold text-purple-800 flex items-center gap-2">
                    <Sparkles size={16} className="fill-purple-600" />
-                   AI Output: {activeNote.aiPromptType}
+                   AI 输出: {activeNote.aiPromptType}
                  </h3>
                  <button 
                   onClick={() => copyToClipboard(activeNote.aiResponse || "")}
                   className="p-1.5 text-purple-400 hover:text-purple-700 hover:bg-purple-100 rounded-md transition-colors"
-                  title="Copy"
+                  title="复制"
                  >
                    {copied ? <CheckCheck size={16} /> : <Copy size={16} />}
                  </button>
@@ -235,16 +244,16 @@ export default function App() {
             <div className="w-24 h-24 bg-blue-50 rounded-full flex items-center justify-center mb-6">
               <Sparkles size={40} className="text-blue-300" />
             </div>
-            <h2 className="text-xl font-bold text-gray-800 mb-2">No notes yet</h2>
+            <h2 className="text-xl font-bold text-gray-800 mb-2">还没有笔记</h2>
             <p className="text-gray-500 mb-8 max-w-xs">
-              Tap the microphone button below to record your first thought, idea, or meeting note.
+              点击下方的麦克风按钮录制您的第一条想法、创意或会议笔记。
             </p>
             {!settings.siliconFlowToken && (
                <button 
                  onClick={() => setIsSettingsOpen(true)}
                  className="text-sm text-blue-600 font-semibold underline underline-offset-4"
                >
-                 Configure API Token First
+                 请先配置 API Token
                </button>
             )}
           </div>
@@ -270,7 +279,7 @@ export default function App() {
           className="pointer-events-auto bg-blue-600 hover:bg-blue-700 text-white rounded-full p-4 shadow-lg shadow-blue-600/30 transition-transform active:scale-95 flex items-center gap-2 px-6"
         >
           <Plus size={24} />
-          <span className="font-semibold text-lg">New Note</span>
+          <span className="font-semibold text-lg">新建笔记</span>
         </button>
       </div>
     </div>
